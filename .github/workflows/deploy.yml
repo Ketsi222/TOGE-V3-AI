@@ -25,8 +25,16 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install dependencies for Toge Bot v2
-        run: npm install
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-      - name: Start Toge Bot v2 application
-        run: npm start
+      - name: Install dependencies for Toge Bot v2
+        run: npm ci
+
+      - name: Run tests for Toge Bot v2
+        run: npm test
